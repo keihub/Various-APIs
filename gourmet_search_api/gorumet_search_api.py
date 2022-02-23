@@ -99,5 +99,64 @@ def forming_restaurant_data(restaurant_dict: Dict) -> List:
     return result_list
 
 
+def search_price(restaurant_list: List, asking_price: int) -> List:
+    """
+    Receive restaurant information and display
+    restaurants that match your price request
+
+    Args
+    ------
+    restaurant_list: See Examples
+    asking_price: Price you want to search for
+
+    Return
+    -------
+    result_list: See Examples
+
+    Examples
+    ---------
+    >>> restaurant_list = [
+        {'name': 'restaurant1',
+        'address': '福岡県福岡市',
+        'station_name': '天神',
+        'average_price': '2001～3000円',
+        'genre': '韓国料理',
+        'urls': 'https://www.sample.jp/',
+        'card': '利用可'},
+        {'name': 'restaurant2',
+        'address': '福岡県福岡市',
+        'station_name': '天神',
+        'average_price': '3001～4000円',
+        'genre': '韓国料理',
+        'urls': 'https://www.sample.jp/',
+        'card': '利用可'}
+        ]
+
+    >>> asking_price = 2500
+
+    >>> search_price()
+            name        address  station_name  average_price     genre                   urls   card
+    0  restaurant1  福岡県福岡市         天神  2001～3000円  韓国料理  https://www.sample.jp/  利用可
+
+
+    """
+    restaurant_df = pd.DataFrame(restaurant_list)
+    restaurant_df["average_lower_price"] = restaurant_df["average_price"].apply(
+        lambda x: int(x.split("～")[0])
+    )
+    restaurant_df["average_upper_price"] = restaurant_df["average_price"].apply(
+        lambda x: int(x.split("～")[1].split("円")[0])
+    )
+    result_df = restaurant_df[
+        restaurant_df["average_lower_price"].apply(lambda x: x <= asking_price)
+        & restaurant_df["average_upper_price"].apply(lambda x: asking_price <= x)
+    ]
+    result_list = result_df[
+        ["name", "address", "station_name", "average_price", "genre", "urls", "card"]
+    ]
+    return result_list
+
+
 get_restaurant_info = get_restaurant_information("福岡")
 forming_data = forming_restaurant_data(get_restaurant_info)
+search_price(forming_data, 2500)
