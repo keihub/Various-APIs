@@ -134,10 +134,9 @@ def search_price(restaurant_list: List, asking_price: int) -> List:
 
     >>> asking_price = 2500
 
-    >>> search_price()
+    >>> search_price(restaurant_list, asking_price)
             name        address  station_name  average_price     genre                   urls   card
     0  restaurant1  福岡県福岡市         天神  2001～3000円  韓国料理  https://www.sample.jp/  利用可
-
 
     """
     restaurant_df = pd.DataFrame(restaurant_list)
@@ -157,6 +156,55 @@ def search_price(restaurant_list: List, asking_price: int) -> List:
     return result_list
 
 
+def search_station(restaurant_list: List, search_station_name: str):
+    """
+    Receives restaurant information and displays the restaurants
+    that match the station you want to search
+
+    Args
+    ------
+    restaurant_list: See Examples
+    search_station_name: Station you want to search for
+
+    Return
+    -------
+    result_list: See Examples
+
+    Examples
+    ---------
+    >>> restaurant_list = [
+        {'name': 'restaurant1',
+        'address': '福岡県福岡市',
+        'station_name': '博多',
+        'average_price': '2001～3000円',
+        'genre': '韓国料理',
+        'urls': 'https://www.sample.jp/',
+        'card': '利用可'},
+        {'name': 'restaurant2',
+        'address': '福岡県福岡市',
+        'station_name': '天神',
+        'average_price': '3001～4000円',
+        'genre': '韓国料理',
+        'urls': 'https://www.sample.jp/',
+        'card': '利用可'}
+        ]
+
+    >>> search_station_name = "博多"
+
+    >>> search_price(restaurant_list, asking_price)
+            name        address  station_name  average_price     genre                   urls   card
+    0  restaurant1  福岡県福岡市         博多  2001～3000円  韓国料理  https://www.sample.jp/  利用可
+
+    """
+    restaurant_df = pd.DataFrame(restaurant_list)
+    result_df = restaurant_df[
+        restaurant_df["station_name"].apply(lambda x: x in search_station_name)
+    ]
+
+    return result_df
+
+
 get_restaurant_info = get_restaurant_information("福岡")
 forming_data = forming_restaurant_data(get_restaurant_info)
-search_price(forming_data, 2500)
+search_price(forming_data, asking_price=2500)
+search_station(forming_data, search_station_name="博多")
